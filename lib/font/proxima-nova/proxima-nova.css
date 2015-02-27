@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('proxima-nova.eot');
+    src: url('proxima-nova.eot?#iefix') format('embedded-opentype'),
+         url('proxima-nova.woff') format('woff'),
+         url('proxima-nova.ttf') format('truetype');
+
+    font-weight: normal;
+    font-style: normal;
+}

@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>A gentle introduction to functional programming in JavaScript by mocking Common Lisp</title>
+    <meta name="author" content="Alejandro Andres">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/redradix-theme.css" id="theme">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+      <script src="lib/js/html5shiv.js"></script>
+      <![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section class="corporate-slide">
+          <div class="corporate-logo"><img src='images/redradix.png' /></div>
+          <h3>A gentle introduction to functional programming in JavaScript by mocking Common Lisp</h3>
+          <p>
+          <small>Oh, noes! Created by your beloved <a href="http://twitter.com/fuzzyalej">@fuzzyalej</a></small>
+          </p>
+        </section>
+
+        <section class="corporate-slide">
+          <h3>In computer science, functional programming is a programming paradigm, a style of building the structure and elements of computer programs, that treats computation as the evaluation of mathematical functions and avoids changing-state and mutable data. Your brain just farted.</h3>
+        </section>
+
+        <section class="corporate-slide">
+          <h1>I can hear you scream!!1!!!</h1>
+          <small>Warning: not the best javascript ever</small>
+        </section>
+
+        <section>
+          <h1>Better now? ø_ø</h1>
+        </section>
+
+        <section>
+          <h1>Functional Programming</h1>
+        </section>
+
+        <section>
+          <h2>What? Paradigm</h2>
+          <ul>
+            <li>functions</li>
+            <li>what and not how</li>
+            <li>data flow, composability</li>
+            <li>inmutable data</li>
+            <li>the programming language</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Why</h2>
+          <ul>
+            <li>brevity + clarity + intention = productivity</li>
+            <li>composability</li>
+            <li>paralelism</li>
+            <li>a different way of thinking (maybe more natural?)</li>
+            <li>math-based</li>
+            <li>create a vocabulary for your problem</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>What are we going to do</h2>
+          <p>Learn by doing. Learning by recreating the best hits from the 80's famous group: Common Lisp</p>
+        </section>
+
+        <section>
+          <section>
+            <h2>LISP === LIST</h2>
+            <p>Lists are the most versatile data type, they can represent almost anything (set, table, graph, tree, sentences..)</p>
+          </section>
+          <section data-background="lib/img/1.jpg" data-background-size="50%"></section>
+          <section data-background="lib/img/2.jpg" data-background-size="50%"></section>
+          <section data-background="lib/img/3.jpg" data-background-size="50%"></section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Let's create a brick</h3>
+            <pre><code>
+// (value) -> cell
+function cell(value) {
+  //...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function cell(value) {
+  return {
+    value: value,
+    next: null //null is cool
+  };
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Let's put the first brick</h3>
+            <pre><code>
+//(value, list) -> list
+function cons(value, list) {
+  //...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function cons(value, list) {
+  var tmp = cell(value);
+  tmp.next = list || null;
+  return tmp;
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>How can we create a list?</h3>
+            <pre><code>
+//This is cheating (but valid), values should be inmutable!!
+c1 = cell(1);
+c2 = cell(2);
+c3 = cell(3);
+c1.next = c2;
+c2.next = c3;
+l = c1;
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+            //This is valid but not very reusable
+            l = cons(1, cons(2, cons(3, nil)))
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+// (*values) -> list
+function list() {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function list() {
+  if(arguments[0] === undefined) return null;
+  var args = Array.prototype.slice.call(arguments),
+      head = args[0],
+      tail = args.slice(1);
+  return cons(head, list.apply(this, tail));
+}
+//OMFG!!1!, That's recursive!
+//OMFG!!1!, That's reusing what we already have!
+//OMFG!!1!, apply/call/this, arghhh!
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>first, rest</h3>
+            <pre><code>
+// (list) -> value
+function first(list) {
+// ...
+}
+
+// (list) -> list
+function rest(list) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function first(list) {
+  if(list === null) return null;
+  return list.value;
+}
+var car = first;
+var head = first;
+
+function rest(list) {
+  if(list === null) return null;
+  return list.next;
+}
+var cdr = rest;
+var tail = rest;
+            </code></pre>
+          </section>
+          <section>
+            <h6>The More You Know</h6>
+            <p>
+              The left half is called the CAR, and the right half is called the CDR (pronounced "cou-der", rhymes with "good-er"). These
+              names are relics from the early days of computing, when Lisp first ran on a machine called the IBM 704. The 704 was so primitive it didn't even have
+              transistors—it used vacuum tubes. Each of itss "registers" was divided into several components, two of which were the address portion and the decrement portion.
+              <br/>
+              <br/>
+              Back then, the name CAR stood for Contents of Address portion of
+              Register, and CDR stood for Contents of Decrement portion of Register.
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Last</h3>
+            <pre><code>
+//(list) -> value
+function last(list) {
+  //..
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function last(list) {
+  if(rest(list) === null) return first(list);
+  return last(rest(list));
+}
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h3>length</h3>
+            <pre><code>
+//(list) -> value
+function length(list) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function length(list) {
+  if(list === null) return 0;
+  return 1 + length(rest(list));
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Recursion vs iteration</h3>
+            <ul>
+              <li>I. is just a special case of R.</li>
+              <li>I. involves mutable state (the index)</li>
+              <li>R. is more elegant and natural</li>
+              <li>R. normally less performance, but languages/compilers help</li>
+              <li>R. closer to math. Math is cool. R. is cool. I'm cool.</li>
+            </ul>
+          </section>
+          <section data-background="lib/img/recursion.jpg" data-background-size="100%"></section>
+        </section>
+
+        <section>
+          <section>
+            <h3>How to recurr</h3>
+            <ul>
+              <li>THINK about what you need</li>
+              <li>SET the base case(s) (that stop recursion)</li>
+              <li>OPERATE on the case that you have right now</li>
+              <li>RECURR modifying the params to the function</li>
+              <li>Advanced case: you might need an auxiliary function to recurr</li>
+            </ul>
+          </section>
+          <section data-background="lib/img/confusion.jpg" data-background-size="50%"></section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Recursion vs iteration</h3>
+            <pre><code>
+// Do you speak Fibonacci, motherfucker?
+Recursive version vs Iterative version
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+var fibonacci = function (_) {
+  for(_=[+[],++[[]][+[]],+[],
+    _],_[++[++[++[[]][+[]]][+[]]][+[]]]=
+    (((_[++[++[++[[]][+[]]][+[]]][+[]]]-(++[[]][+[]]))
+    &(((--[[]][+[]])>>>(++[[]][+[]]))))===
+    (_[++[++[++[[]][+[]]][+[]]][+[]]]-(++[[]][+[]])))
+    ?(_[++[++[[]][+[]]][+[]]]=++[[]][+[]],
+    _[++[++[++[[]][+[]]][+[]]][+[]]]-(++[[]][+[]])):
+    +[]; _[++[++[++[[]][+[]]][+[]]][+[]]]--;
+    _[+[]]=(_[++[[]][+[]]]=_[++[++[[]][+[]]][+[]]]=
+    _[+[]]+_[++[[]][+[]]])-_[+[]]);
+    return _[++[++[[]][+[]]][+[]]];
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+// Recursive
+function fib(n) {
+  if(n < 2) return n;
+  return fib(n-1) + fib(n-2);
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+// Iterative
+function fib(n) {
+  var previous = -1,
+      result = 1;
+
+  for(i=0; i<= n; i++) {
+    var sum = result + previous;
+    previous = result;
+    result = sum;
+  }
+  return result;
+}
+// lol!
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+; CL is so pretty I want to cry
+(defun fib (n)
+  "Fibonacci, simple recursion"
+  (if (< n 2)
+    n
+    (+ (fib (- n 1))
+       (fib (- n 2)))))
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>interlude 2</h3>
+            <pre><code>
+// Functional programming is all about reusing bricks
+function replace_first(value, list) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function replace_first(value, list) {
+  return cons(value, rest(list));
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+; CL is elegant
+(defun replace-first (v l)
+"Replace the first element of a list"
+    (cons v (rest l)))
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>nth</h3>
+            <pre><code>
+// (int, list) -> value
+function nth(position, list) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function nth(position, list) {
+  if(position > length(list) || position < 1) return null;
+  if(position === 1) return first(list);
+  return nth(position-1, rest(list));
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+; CL is great
+(nth 1 '(1 2 3))
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>shout it out</h3>
+            <pre><code>
+// (list) -> null
+function print(list) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function print(list) {
+  if(list === null) return '';
+  return ('' + first(list) + ' ' + print(rest(list)));
+}
+// This is not completely finished. What happens when you try to print a nested list?
+// Can you create a better print?
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <h3>Predicates</h3>
+          <pre><code>
+function listp(input) {
+  if(input === null) return null;
+  return (typeof(input) === 'object')
+          && input.hasOwnProperty('value')
+          && input.hasOwnProperty('next');
+}
+
+function atomp(input) { return !listp(input); }
+
+function nullp(input) { return input === null; }
+
+function predicatep(input) { return input === true || input === false; }
+
+function not(predicate) { return !!!predicate; }
+          </code></pre>
+        </section>
+
+        <section>
+          <section>
+            <h3>Better Print</h3>
+            <pre><code>
+// Can we create a better print using predicates?
+function print(list) {
+  //..
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function print(list) {
+  if(list === null) return '';
+  if(listp(first(list))) return '(' + print(first(list)) + '' + print(rest(list)) + ')';
+  return ('' + first(list) + ' ' + print(rest(list)));
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Append</h3>
+            <pre><code>
+// (list, list) -> list
+function append(list1, list2) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function append(list1, list2) {
+  if(not(listp(list1)) && not(listp(list2))) return null;
+
+  if(rest(list1) === null) { return cons(first(list1), list2); }
+  return cons(first(list1), append(rest(list1), list2));
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Reverse</h3>
+            <pre><code>
+// (list) -> list
+function reverse(list) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function reverse(list) {
+  if(not(listp(list))) return null;
+  if(rest(list) === null) return cell(first(list)); //!
+  return append(reverse(rest(list)), cell(first(list)));
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Remove</h3>
+            <pre><code>
+// (list) -> list
+// Removes ALL appearances of `element` in `list`
+function remove(element, list) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function remove(element, list) {
+  if(not(listp(list))) return null;
+  if(first(list) === element) return remove(element, rest(list));
+  return cons(first(list), remove(element, rest(list)));
+}
+// This is tricky. So instead of modifying the list we create a new one without the element
+// How would you do a remove_one function, that only removes the first one?
+// And a remove_last that removes the last one? :)
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <h2>Higher Order Functions superpower</h2>
+          <p>Basically, throwing up functions all over the place (ie. passing them as arguments). Other flavors include anonymous and nested functions, closures...</p>
+        </section>
+
+        <section>
+          <section>
+            <h3>Map</h3>
+            <pre><code>
+// (list, fn) -> list
+function map(list, fn) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function map(list, fn) {
+  if(not(listp(list))) return null;
+  return cons(fn(first(list)), map(rest(list), fn));
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+; CL is succint
+(map 'list
+    (lambda (x) (+ x 1))
+    '(1 2 3 4 5))
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Filter</h3>
+            <pre><code>
+// (list, fn) -> list
+function filter(list, predicatefn) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function filter(list, predicatefn) {
+  if(not(listp(list))) return null;
+  if(predicatefn(first(list))) return cons(first(list), filter(rest(list), predicatefn));
+  return filter(rest(list), predicatefn);
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+; CL is readable
+(remove-if #'evenp '(0 1 2 3 4 5))
+; You get how easy it is, right?
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Count</h3>
+            <pre><code>
+// (value, list) -> value
+function count(value, list) {
+  //..
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function count(value, list) {
+  return length(filter(list, function(e) { return e === value; }));
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Find</h3>
+            <pre><code>
+// (list, fn) -> list
+// Returns the FIRST element that evaluates the predicate to true
+function find(list, predicatefn) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function find(list, predicatefn) {
+  //TODO: a lot of room for improvement, like lazy evaluation :P
+  return first(filter(list, predicatefn));
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Reduce</h3>
+            <pre><code>
+// (list, initial_value, fn) -> value
+// There are different versions depending on the params, etc
+function reduce(list, initial_value, fn) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function reduce(list, initial_value, fn) {
+  if(list === null) return initial_value;
+  return reduce(rest(list), fn(initial_value, first(list)), fn);
+}
+var fold = reduce;
+// Can you create `map` with reduce?
+// Can you create `filter` with reduce?
+            </code></pre>
+          </section>
+        </section>
+
+        <section data-background="lib/img/unicorns_rainbows.jpg" data-background-size="80%">
+          <h4 style='color: yellow;background-color: purple;'>Reduce is awesome</h4>
+        </section>
+
+        <section>
+          <section>
+            <h3>ReduceRight</h3>
+            <pre><code>
+// (list, initial_value, fn) -> value
+// There are different versions depending on the params, etc
+function reduceRight(list, initial_value, fn) {
+  // ...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function reduceRight(list, initial_value, fn) {
+  if(list === null) return initial_value;
+  return fn(reduceRight(rest(list), initial_value, fn), first(list));
+}
+var foldR = reduceRight;
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Every</h3>
+            <pre><code>
+// (list, fn) -> boolean
+function every(list, fn) {
+  //...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function every(list, fn) {
+  return reduce(list, true, function(acc, el) {
+    return acc && fn(el);
+  });
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Any</h3>
+            <pre><code>
+// (list, fn) -> boolean
+function any(list, fn) {
+  //..
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function any(list, fn) {
+  return reduce(list, false, function(acc, el) {
+    return acc || fn(el);
+  });
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Partition</h3>
+            <pre><code>
+// (list, fn) -> (list, list)
+function partition(list, fn) {
+  //..
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function partition(list, fn) {
+  return(function recurr(group1, group2, list, fn){
+    if(fn(list.value)) {
+      group1.push(list.value);
+    } else {
+      group2.push(list.value);
+    }
+
+    if(list.next === null) return;
+
+    recurr(group1, group2, list.next, fn);
+    return [group1, group2];
+  }([], [], list, fn));
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>groupBy</h3>
+            <pre><code>
+// (list, fn) -> hash
+function groupBy(list, fn) {
+  //...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function groupBy(list, fn) {
+  return(function recurr(groups, list, fn){
+    result = fn(list.value);
+    (groups[result] = groups[result] || []).push(list.value);
+
+    if(list.next === null) return groups;
+
+    recurr(groups, list.next, fn);
+    return groups;
+  }({}, list, fn));
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Memoize</h3>
+            <pre><code>
+// (fn) -> fn
+function memoize(fn) {
+  //...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function memoize(fn) {
+  var cache = {};
+  return function(argument) {
+    cache[argument] = cache[argument] || fn(argument);
+    return cache[argument];
+  };
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Partial</h3>
+            <pre><code>
+// (fn, *args) -> fn
+function partial(fn) {
+  //...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function partial(fn) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return function() {
+    var args2 = Array.prototype.slice.call(arguments);
+    return fn.apply(this, args.concat(args2));
+  };
+}
+// This is the simpler one, we can create partial functions to fix middle or end arguments!
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <h2>Curry vs Partial Application</h2>
+          <ul>
+            <li>This is in the pure sense, there are N+1 implementations out there</li>
+            <li>curry: decompose a multi-argument fn into N single-argument fns</li>
+            <li>pa: convert a multi-argument fn into another function that takes less parameters by fixing params</li>
+          </ul>
+        </section>
+
+        <section>
+          <section>
+            <h3>Curry</h3>
+            <pre><code>
+// (fn, *args) -> fn
+function curry(fn) {
+  //...
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function curry(fn) {
+  n = fn.length;
+
+  function stillCurrying(prev) {
+    return function(arg) {
+      var args = prev.concat(arg);
+      if (args.length < n) {
+        return stillCurrying(args);
+      } else {
+        return fn.apply(this, args);
+      }
+    };
+  }
+  return stillCurrying([]);
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Fork</h3>
+            <pre><code>
+// (predicate, fn, fn) -> fn
+function fork(predicate, f, g) {
+  //..
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function fork(predicate, f, g) {
+  return function() {
+    if(predicate.apply(null, arguments))
+      return f.apply(null, arguments);
+    else
+      return g.apply(null, arguments);
+  };
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Serial</h3>
+            <pre><code>
+// (predicate, fn, fn) -> fn
+function serial(predicate, f, g) {
+  //..
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function serial(f, g) {
+  return function() {
+    f.apply(null, arguments);
+    g.apply(null, arguments);
+  };
+}
+// How can we do this for N functions, not just two?
+            </code></pre>
+          </section>
+        </section>
+
+          <section>
+            <h2>What's next?</h2>
+            <ul>
+              <li>Javascript Allongé</li>
+              <li>Secrets of the Javascript Ninja</li>
+              <li>http://htdp.org/</li>
+              <li>Functional Programming for the OO Programmer</li>
+              <li>The Little Schemer</li>
+            </ul>
+          </section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script>
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+          // Optional reveal.js plugins
+        dependencies: [
+        { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+
+  </body>
+</html>
