@@ -656,7 +656,6 @@ function find(list, predicatefn) {
           <section>
             <pre><code>
 function find(list, predicatefn) {
-  //TODO: a lot of room for improvement, like lazy evaluation :P
   return first(filter(list, predicatefn));
 }
             </code></pre>
@@ -768,7 +767,6 @@ function partition(list, fn) {
           </section>
           <section>
             <pre><code>
-//TODO: fix this return list
 function partition(list, fn) {
   return(function recurr(group1, group2, list, fn){
     if(fn(first(list))) {
@@ -791,7 +789,6 @@ function partition(list, fn) {
           <section>
             <h3>groupBy</h3>
             <pre><code>
-// TODO: return list of lists
 // (list, fn) -> hash
 function groupBy(list, fn) {
   //...
@@ -883,7 +880,6 @@ function curry(fn) {
           </section>
           <section>
             <pre><code>
-//TODO: clean this to just returning a function (Eliasize)
 function curry(fn) {
   n = fn.length;
 
