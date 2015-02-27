@@ -184,7 +184,7 @@ function list() {
             <pre><code>
 // (list) -> value
 function first(list) {
-// ...
+  // ...
 }
 
 // (list) -> list
@@ -258,6 +258,25 @@ function length(list) {
 function length(list) {
   if(list === null) return 0;
   return 1 + length(rest(list));
+}
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Count</h3>
+            <pre><code>
+// (value, list) -> value
+function count(value, list) {
+  //..
+}
+            </code></pre>
+          </section>
+          <section>
+            <pre><code>
+function count(value, list) {
+  return length(filter(list, function(e) { return e === value; }));
 }
             </code></pre>
           </section>
@@ -520,18 +539,18 @@ function reverse(list) {
             <h3>Remove</h3>
             <pre><code>
 // (list) -> list
-// Removes ALL appearances of `element` in `list`
-function remove(element, list) {
+// Removes ALL appearances of `value` in `list`
+function remove(value, list) {
   // ...
 }
             </code></pre>
           </section>
           <section>
             <pre><code>
-function remove(element, list) {
+function remove(value, list) {
   if(not(listp(list))) return null;
-  if(first(list) === element) return remove(element, rest(list));
-  return cons(first(list), remove(element, rest(list)));
+  if(first(list) === value) return remove(value, rest(list));
+  return cons(first(list), remove(value, rest(list)));
 }
 // This is tricky. So instead of modifying the list we create a new one without the element
 // How would you do a remove_one function, that only removes the first one?
@@ -587,8 +606,11 @@ function filter(list, predicatefn) {
             <pre><code>
 function filter(list, predicatefn) {
   if(not(listp(list))) return null;
-  if(predicatefn(first(list))) return cons(first(list), filter(rest(list), predicatefn));
-  return filter(rest(list), predicatefn);
+  if(predicatefn(first(list))) {
+    return cons(first(list), filter(rest(list), predicatefn));
+  } else {
+    return filter(rest(list), predicatefn);
+  }
 }
             </code></pre>
           </section>
@@ -605,16 +627,16 @@ function filter(list, predicatefn) {
           <section>
             <h3>Count</h3>
             <pre><code>
-// (value, list) -> value
-function count(value, list) {
+// (predicate, list) -> value
+function count(predicate, list) {
   //..
 }
             </code></pre>
           </section>
           <section>
             <pre><code>
-function count(value, list) {
-  return length(filter(list, function(e) { return e === value; }));
+function count(predicate, list) {
+  return length(filter(list, predicate));
 }
             </code></pre>
           </section>
@@ -646,6 +668,7 @@ function find(list, predicatefn) {
             <h3>Reduce</h3>
             <pre><code>
 // (list, initial_value, fn) -> value
+// fn: arity 2
 // There are different versions depending on the params, etc
 function reduce(list, initial_value, fn) {
   // ...
@@ -745,17 +768,18 @@ function partition(list, fn) {
           </section>
           <section>
             <pre><code>
+//TODO: fix this return list
 function partition(list, fn) {
   return(function recurr(group1, group2, list, fn){
-    if(fn(list.value)) {
-      group1.push(list.value);
+    if(fn(first(list))) {
+      group1.push(first(list));
     } else {
-      group2.push(list.value);
+      group2.push(first(list));
     }
 
-    if(list.next === null) return;
+    if(rest(list) === null) return;
 
-    recurr(group1, group2, list.next, fn);
+    recurr(group1, group2, rest(list), fn);
     return [group1, group2];
   }([], [], list, fn));
 }
@@ -767,6 +791,7 @@ function partition(list, fn) {
           <section>
             <h3>groupBy</h3>
             <pre><code>
+// TODO: return list of lists
 // (list, fn) -> hash
 function groupBy(list, fn) {
   //...
@@ -815,7 +840,7 @@ function memoize(fn) {
 
         <section>
           <section>
-            <h3>Partial</h3>
+            <h3>Partial Application</h3>
             <pre><code>
 // (fn, *args) -> fn
 function partial(fn) {
@@ -832,7 +857,7 @@ function partial(fn) {
     return fn.apply(this, args.concat(args2));
   };
 }
-// This is the simpler one, we can create partial functions to fix middle or end arguments!
+// This is the simplest one, we can create partial functions to fix middle or end arguments!
             </code></pre>
           </section>
         </section>
@@ -858,6 +883,7 @@ function curry(fn) {
           </section>
           <section>
             <pre><code>
+//TODO: clean this to just returning a function (Eliasize)
 function curry(fn) {
   n = fn.length;
 
@@ -905,8 +931,8 @@ function fork(predicate, f, g) {
           <section>
             <h3>Serial</h3>
             <pre><code>
-// (predicate, fn, fn) -> fn
-function serial(predicate, f, g) {
+// (fn, fn) -> fn
+function serial(f, g) {
   //..
 }
             </code></pre>
